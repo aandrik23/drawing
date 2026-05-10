@@ -1,17 +1,20 @@
-//! Geometrical shapes — teammates add modules per `TASKS.md`:
-//! `point_line.rs`, `triangle_rect.rs`, `circle_mod.rs`.
+//! Shared geometry module wiring for the team project.
 //!
-//! After implementing, declare modules here and `pub use` the shape types.
+//! Each teammate implements their assigned shapes in one module.
 
-use raster::Color;
+pub mod circle_mod;
+pub mod point_line;
+pub mod triangle_rect;
 
-/// Pixel writer used by all shapes (`Image` implements this in `main.rs`).
-pub trait Displayable {
-    fn display(&mut self, x: i32, y: i32, color: Color);
+pub use circle_mod::{Circle, Cube};
+pub use point_line::{Line, Pentagon, Point};
+pub use triangle_rect::{Rectangle, Triangle};
+
+pub trait Drawable {
+    fn draw(&self, image: &mut raster::Image);
+    fn color(&self) -> raster::Color;
 }
 
-/// Something that can be painted onto a [`Displayable`] surface.
-pub trait Drawable {
-    fn draw<D: Displayable + ?Sized>(&self, target: &mut D);
-    fn color(&self) -> Color;
+pub trait Displayable {
+    fn display(&mut self, x: i32, y: i32, color: raster::Color);
 }
