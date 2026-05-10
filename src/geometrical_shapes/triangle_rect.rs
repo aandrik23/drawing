@@ -1,6 +1,6 @@
 use raster::{Color, Image};
 
-use super::point_line::Point;
+use super::point_line::{Line, Point};
 use super::Drawable;
 
 #[derive(Clone, Copy, Debug)]
@@ -21,10 +21,14 @@ impl Triangle {
 }
 
 impl Drawable for Triangle {
-    fn draw(&self, _image: &mut Image) {}
+    fn draw(&self, image: &mut Image) {
+        Line::new(&self.a, &self.b).draw(image);
+        Line::new(&self.b, &self.c).draw(image);
+        Line::new(&self.c, &self.a).draw(image);
+    }
 
     fn color(&self) -> Color {
-        Color::rgb(0, 0, 255)
+        Color::rgb(0, 120, 255)
     }
 }
 
@@ -36,18 +40,33 @@ pub struct Rectangle {
 
 impl Rectangle {
     pub fn new(first: &Point, second: &Point) -> Self {
+        let min_x = first.x.min(second.x);
+        let max_x = first.x.max(second.x);
+        let min_y = first.y.min(second.y);
+        let max_y = first.y.max(second.y);
+
         Self {
-            first: *first,
-            second: *second,
+            first: Point::new(min_x, min_y),
+            second: Point::new(max_x, max_y),
         }
     }
 }
 
 impl Drawable for Rectangle {
-    fn draw(&self, _image: &mut Image) {}
+    fn draw(&self, image: &mut Image) {
+        let top_left = self.first;
+        let bottom_right = self.second;
+        let top_right = Point::new(bottom_right.x, top_left.y);
+        let bottom_left = Point::new(top_left.x, bottom_right.y);
+
+        Line::new(&top_left, &top_right).draw(image);
+        Line::new(&top_right, &bottom_right).draw(image);
+        Line::new(&bottom_right, &bottom_left).draw(image);
+        Line::new(&bottom_left, &top_left).draw(image);
+    }
 
     fn color(&self) -> Color {
-        Color::rgb(255, 255, 0)
+        Color::rgb(255, 180, 0)
     }
 }
 
@@ -68,7 +87,19 @@ mod tests {
     }
 
     #[test]
-    fn rectangle_new_keeps_points() {
+    fn rectangle_new_normalizes_points() {
+        let first = Point::new(150, 300);
+        let second = Point::new(50, 60);
+        let rectangle = Rectangle::new(&first, &second);
+
+        assert_eq!(rectangle.first.x, 50);
+        assert_eq!(rectangle.first.y, 60);
+        assert_eq!(rectangle.second.x, 150);
+        assert_eq!(rectangle.second.y, 300);
+    }
+
+    #[test]
+    fn rectangle_new_keeps_points_when_already_ordered() {
         let first = Point::new(5, 8);
         let second = Point::new(20, 30);
         let rectangle = Rectangle::new(&first, &second);
