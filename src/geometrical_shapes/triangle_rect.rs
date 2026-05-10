@@ -3,25 +3,6 @@ use raster::{Color, Image};
 use super::point_line::{Line, Point};
 use super::Drawable;
 
-#[inline]
-fn triangle_colors() -> [Color; 3] {
-    [
-        Color::rgb(255, 215, 0),
-        Color::rgb(255, 105, 180),
-        Color::rgb(0, 255, 255),
-    ]
-}
-
-#[inline]
-fn rectangle_colors() -> [Color; 4] {
-    [
-        Color::rgb(255, 180, 0),
-        Color::rgb(0, 255, 120),
-        Color::rgb(180, 0, 255),
-        Color::rgb(255, 70, 70),
-    ]
-}
-
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: Point,
@@ -41,14 +22,14 @@ impl Triangle {
 
 impl Drawable for Triangle {
     fn draw(&self, image: &mut Image) {
-        let [ab, bc, ca] = triangle_colors();
-        Line::new(&self.a, &self.b).draw_with_color(image, ab);
-        Line::new(&self.b, &self.c).draw_with_color(image, bc);
-        Line::new(&self.c, &self.a).draw_with_color(image, ca);
+        let color = self.color();
+        Line::new(&self.a, &self.b).draw_with_color(image, color.clone());
+        Line::new(&self.b, &self.c).draw_with_color(image, color.clone());
+        Line::new(&self.c, &self.a).draw_with_color(image, color);
     }
 
     fn color(&self) -> Color {
-        triangle_colors()[0].clone()
+        Color::rgb(255, 215, 0)
     }
 }
 
@@ -78,16 +59,16 @@ impl Drawable for Rectangle {
         let bottom_right = self.second;
         let top_right = Point::new(bottom_right.x, top_left.y);
         let bottom_left = Point::new(top_left.x, bottom_right.y);
-        let [top, right, bottom, left] = rectangle_colors();
+        let color = self.color();
 
-        Line::new(&top_left, &top_right).draw_with_color(image, top);
-        Line::new(&top_right, &bottom_right).draw_with_color(image, right);
-        Line::new(&bottom_right, &bottom_left).draw_with_color(image, bottom);
-        Line::new(&bottom_left, &top_left).draw_with_color(image, left);
+        Line::new(&top_left, &top_right).draw_with_color(image, color.clone());
+        Line::new(&top_right, &bottom_right).draw_with_color(image, color.clone());
+        Line::new(&bottom_right, &bottom_left).draw_with_color(image, color.clone());
+        Line::new(&bottom_left, &top_left).draw_with_color(image, color);
     }
 
     fn color(&self) -> Color {
-        rectangle_colors()[0].clone()
+        Color::rgb(255, 180, 0)
     }
 }
 
