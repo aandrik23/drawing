@@ -2,6 +2,11 @@
 //!
 //! Each teammate implements their assigned shapes in one module.
 
+mod bresenham;
+
+#[cfg(test)]
+pub(crate) mod test_canvas;
+
 pub mod circle_mod;
 pub mod point_line;
 pub mod triangle_rect;

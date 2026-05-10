@@ -6,7 +6,7 @@ Workload is spread so everyone has a similar amount of work: **three deliverable
 
 ---
 
-## Person 1 — `point_line.rs`
+## Person 1 — `person_1/` module
 
 - **`Point`**: `new`, `random`, `Drawable` (single pixel), chosen color.
 - **`Line`**: `new`, `random`, Bresenham `draw`, color.
@@ -19,7 +19,7 @@ Workload is spread so everyone has a similar amount of work: **three deliverable
 
 ## Person 2 — `triangle_rect.rs`
 
-- **`Triangle`**: `new` from three `Point`s; draw as three edges (reuse `bresenham` from `point_line`).
+- **`Triangle`**: `new` from three `Point`s; draw as three edges (reuse `bresenham` from `person_1`).
 - **`Rectangle`**: `new` from two `Point`s; normalize min/max; draw four edges.
 - **Tests**: e.g. rectangle min/max independent of point order.
 
