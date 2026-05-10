@@ -1,7 +1,6 @@
-//! Geometrical shapes — teammates add modules per `TASKS.md`:
-//! `point_line.rs`, `triangle_rect.rs`, `circle_mod.rs`.
+//! Shared geometry module wiring for the team project.
 //!
-//! After implementing, declare modules here and `pub use` the shape types.
+//! Each teammate implements their assigned shapes in one module.
 
 pub mod circle_mod;
 pub mod point_line;

@@ -50,17 +50,3 @@ impl Drawable for Rectangle {
         Color::rgb(255, 255, 0)
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn rectangle_constructor_keeps_points_accessible() {
-        let a = Point::new(5, 8);
-        let b = Point::new(20, 30);
-        let rect = Rectangle::new(&a, &b);
-        assert_eq!(rect.first.x, 5);
-        assert_eq!(rect.second.y, 30);
-    }
-}

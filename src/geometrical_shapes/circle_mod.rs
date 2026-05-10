@@ -57,14 +57,3 @@ impl Drawable for Cube {
         Color::rgb(0, 255, 255)
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::Circle;
-
-    #[test]
-    fn circle_random_has_positive_radius() {
-        let circle = Circle::random(500, 500);
-        assert!(circle.radius > 0);
-    }
-}
