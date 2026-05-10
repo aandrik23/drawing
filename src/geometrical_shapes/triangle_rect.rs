@@ -3,6 +3,25 @@ use raster::{Color, Image};
 use super::point_line::{Line, Point};
 use super::Drawable;
 
+#[inline]
+fn triangle_colors() -> [Color; 3] {
+    [
+        Color::rgb(255, 215, 0),
+        Color::rgb(255, 105, 180),
+        Color::rgb(0, 255, 255),
+    ]
+}
+
+#[inline]
+fn rectangle_colors() -> [Color; 4] {
+    [
+        Color::rgb(255, 180, 0),
+        Color::rgb(0, 255, 120),
+        Color::rgb(180, 0, 255),
+        Color::rgb(255, 70, 70),
+    ]
+}
+
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle {
     pub a: Point,
@@ -22,13 +41,14 @@ impl Triangle {
 
 impl Drawable for Triangle {
     fn draw(&self, image: &mut Image) {
-        Line::new(&self.a, &self.b).draw(image);
-        Line::new(&self.b, &self.c).draw(image);
-        Line::new(&self.c, &self.a).draw(image);
+        let [ab, bc, ca] = triangle_colors();
+        Line::new(&self.a, &self.b).draw_with_color(image, ab);
+        Line::new(&self.b, &self.c).draw_with_color(image, bc);
+        Line::new(&self.c, &self.a).draw_with_color(image, ca);
     }
 
     fn color(&self) -> Color {
-        Color::rgb(255, 215, 0)
+        triangle_colors()[0].clone()
     }
 }
 
@@ -58,15 +78,16 @@ impl Drawable for Rectangle {
         let bottom_right = self.second;
         let top_right = Point::new(bottom_right.x, top_left.y);
         let bottom_left = Point::new(top_left.x, bottom_right.y);
+        let [top, right, bottom, left] = rectangle_colors();
 
-        Line::new(&top_left, &top_right).draw(image);
-        Line::new(&top_right, &bottom_right).draw(image);
-        Line::new(&bottom_right, &bottom_left).draw(image);
-        Line::new(&bottom_left, &top_left).draw(image);
+        Line::new(&top_left, &top_right).draw_with_color(image, top);
+        Line::new(&top_right, &bottom_right).draw_with_color(image, right);
+        Line::new(&bottom_right, &bottom_left).draw_with_color(image, bottom);
+        Line::new(&bottom_left, &top_left).draw_with_color(image, left);
     }
 
     fn color(&self) -> Color {
-        Color::rgb(255, 180, 0)
+        rectangle_colors()[0].clone()
     }
 }
 

@@ -88,6 +88,17 @@ impl Line {
             line_color(),
         );
     }
+
+    pub fn draw_with_color<D: Displayable + ?Sized>(&self, target: &mut D, color: Color) {
+        bresenham(
+            target,
+            self.start.x,
+            self.start.y,
+            self.end.x,
+            self.end.y,
+            color,
+        );
+    }
 }
 
 impl Drawable for Line {

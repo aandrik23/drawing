@@ -1,13 +1,88 @@
+use std::sync::atomic::{AtomicUsize, Ordering};
+
 use rand::Rng;
 use raster::{Color, Image};
 
 use super::point_line::Point;
 use super::{Displayable, Drawable};
 
-#[derive(Clone, Copy, Debug)]
+static CIRCLE_COLOR_INDEX: AtomicUsize = AtomicUsize::new(0);
+
+fn next_circle_color() -> Color {
+    let index = CIRCLE_COLOR_INDEX.fetch_add(1, Ordering::Relaxed);
+    match index % 64 {
+        0 => Color::rgb(255, 0, 255),
+        1 => Color::rgb(0, 255, 0),
+        2 => Color::rgb(255, 255, 0),
+        3 => Color::rgb(255, 128, 0),
+        4 => Color::rgb(0, 255, 128),
+        5 => Color::rgb(128, 0, 255),
+        6 => Color::rgb(255, 0, 128),
+        7 => Color::rgb(0, 200, 255),
+        8 => Color::rgb(255, 80, 80),
+        9 => Color::rgb(80, 255, 80),
+        10 => Color::rgb(80, 80, 255),
+        11 => Color::rgb(255, 200, 80),
+        12 => Color::rgb(200, 255, 80),
+        13 => Color::rgb(80, 255, 200),
+        14 => Color::rgb(200, 80, 255),
+        15 => Color::rgb(255, 80, 200),
+        16 => Color::rgb(120, 255, 0),
+        17 => Color::rgb(0, 120, 255),
+        18 => Color::rgb(255, 0, 120),
+        19 => Color::rgb(180, 255, 0),
+        20 => Color::rgb(0, 255, 180),
+        21 => Color::rgb(180, 0, 255),
+        22 => Color::rgb(255, 180, 0),
+        23 => Color::rgb(0, 180, 255),
+        24 => Color::rgb(255, 40, 160),
+        25 => Color::rgb(40, 255, 160),
+        26 => Color::rgb(160, 40, 255),
+        27 => Color::rgb(255, 160, 40),
+        28 => Color::rgb(40, 160, 255),
+        29 => Color::rgb(160, 255, 40),
+        30 => Color::rgb(255, 100, 180),
+        31 => Color::rgb(100, 255, 180),
+        32 => Color::rgb(180, 100, 255),
+        33 => Color::rgb(255, 180, 100),
+        34 => Color::rgb(100, 180, 255),
+        35 => Color::rgb(180, 255, 100),
+        36 => Color::rgb(255, 20, 20),
+        37 => Color::rgb(20, 255, 20),
+        38 => Color::rgb(20, 20, 255),
+        39 => Color::rgb(255, 20, 220),
+        40 => Color::rgb(20, 255, 220),
+        41 => Color::rgb(220, 20, 255),
+        42 => Color::rgb(255, 220, 20),
+        43 => Color::rgb(20, 220, 255),
+        44 => Color::rgb(220, 255, 20),
+        45 => Color::rgb(255, 60, 140),
+        46 => Color::rgb(60, 255, 140),
+        47 => Color::rgb(140, 60, 255),
+        48 => Color::rgb(255, 140, 60),
+        49 => Color::rgb(60, 140, 255),
+        50 => Color::rgb(140, 255, 60),
+        51 => Color::rgb(255, 0, 200),
+        52 => Color::rgb(0, 255, 200),
+        53 => Color::rgb(200, 0, 255),
+        54 => Color::rgb(255, 200, 0),
+        55 => Color::rgb(0, 200, 255),
+        56 => Color::rgb(200, 255, 0),
+        57 => Color::rgb(255, 110, 0),
+        58 => Color::rgb(110, 255, 0),
+        59 => Color::rgb(0, 255, 110),
+        60 => Color::rgb(0, 110, 255),
+        61 => Color::rgb(110, 0, 255),
+        62 => Color::rgb(255, 0, 110),
+        _ => Color::rgb(150, 255, 150),
+    }
+}
+
+#[derive(Clone, Debug)]
 pub struct Circle {
     pub center: Point,
     pub radius: i32,
+    pub color: Color,
 }
 
 impl Circle {
@@ -15,6 +90,7 @@ impl Circle {
         Self {
             center: *center,
             radius,
+            color: next_circle_color(),
         }
     }
 
@@ -89,7 +165,7 @@ impl Drawable for Circle {
     }
 
     fn color(&self) -> Color {
-        Color::rgb(255, 0, 255)
+        self.color.clone()
     }
 }
 
