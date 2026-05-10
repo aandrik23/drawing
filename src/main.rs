@@ -1,8 +1,9 @@
+mod raster;
 mod geometrical_shapes;
 
 use geometrical_shapes as gs;
 use geometrical_shapes::{Displayable, Drawable};
-use raster::{Color, Image};
+use crate::raster::{Color, Image};
 
 fn main() {
     let mut image = Image::blank(1000, 1000);
@@ -24,7 +25,7 @@ fn main() {
     }
 
     gs::Cube::random(image.width, image.height).draw(&mut image);
-    raster::save(&image, "image.png").unwrap();
+    crate::raster::save(&image, "image.png").unwrap();
 }
 
 impl Displayable for Image {

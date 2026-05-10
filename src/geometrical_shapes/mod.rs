@@ -16,10 +16,10 @@ pub use point_line::{Line, Pentagon, Point};
 pub use triangle_rect::{Rectangle, Triangle};
 
 pub trait Drawable {
-    fn draw(&self, image: &mut raster::Image);
-    fn color(&self) -> raster::Color;
+    fn draw(&self, image: &mut crate::raster::Image);
+    fn color(&self) -> crate::raster::Color;
 }
 
 pub trait Displayable {
-    fn display(&mut self, x: i32, y: i32, color: raster::Color);
+    fn display(&mut self, x: i32, y: i32, color: crate::raster::Color);
 }
