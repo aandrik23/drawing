@@ -83,3 +83,28 @@ impl Drawable for Pentagon {
         Color::rgb(0, 255, 0)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn point_random_stays_in_bounds() {
+        let p = Point::random(100, 200);
+
+        assert!((0..100).contains(&p.x));
+        assert!((0..200).contains(&p.y));
+    }
+
+    #[test]
+    fn line_new_keeps_endpoints() {
+        let start = Point::new(10, 20);
+        let end = Point::new(30, 40);
+        let line = Line::new(&start, &end);
+
+        assert_eq!(line.start.x, 10);
+        assert_eq!(line.start.y, 20);
+        assert_eq!(line.end.x, 30);
+        assert_eq!(line.end.y, 40);
+    }
+}

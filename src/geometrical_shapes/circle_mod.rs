@@ -57,3 +57,25 @@ impl Drawable for Cube {
         Color::rgb(0, 255, 255)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn circle_random_has_safe_radius() {
+        let circle = Circle::random(500, 500);
+
+        assert!(circle.radius >= 1);
+    }
+
+    #[test]
+    fn cube_new_keeps_values() {
+        let center = Point::new(50, 60);
+        let cube = Cube::new(&center, 25);
+
+        assert_eq!(cube.center.x, 50);
+        assert_eq!(cube.center.y, 60);
+        assert_eq!(cube.size, 25);
+    }
+}
