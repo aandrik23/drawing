@@ -1,4 +1,4 @@
-use crate::raster::{Color, Image};
+use raster::{Color, Image};
 
 use super::point_line::{Line, Point};
 use super::Drawable;
