@@ -49,7 +49,7 @@ impl Drawable for Line {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geometrical_shapes::person_1::test_canvas::Canvas;
+    use crate::geometrical_shapes::test_canvas::Canvas;
 
     #[test]
     fn random_line_endpoints_stay_inside_dimensions() {

@@ -37,7 +37,7 @@ pub fn bresenham<D: Displayable + ?Sized>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geometrical_shapes::person_1::test_canvas::Canvas;
+    use crate::geometrical_shapes::test_canvas::Canvas;
     use raster::Color;
 
     #[test]

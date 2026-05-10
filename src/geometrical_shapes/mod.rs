@@ -1,10 +1,18 @@
 //! Geometrical shapes — teammates add modules per `TASKS.md`:
-//! `person_1/`, `triangle_rect.rs`, `circle_mod.rs`.
+//! `triangle_rect.rs`, `circle_mod.rs`.
 
-mod person_1;
+mod bresenham;
+mod line;
+mod pentagon;
+mod point;
 
-pub use person_1::{Line, Pentagon, Point};
-pub use person_1::bresenham;
+#[cfg(test)]
+pub(crate) mod test_canvas;
+
+pub use bresenham::bresenham;
+pub use line::Line;
+pub use pentagon::Pentagon;
+pub use point::Point;
 
 use raster::Color;
 

@@ -39,7 +39,7 @@ impl Drawable for Point {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geometrical_shapes::person_1::test_canvas::Canvas;
+    use crate::geometrical_shapes::test_canvas::Canvas;
 
     #[test]
     fn random_point_stays_inside_dimensions() {

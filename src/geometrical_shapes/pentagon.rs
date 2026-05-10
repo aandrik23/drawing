@@ -55,7 +55,7 @@ impl Drawable for Pentagon {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::geometrical_shapes::person_1::test_canvas::Canvas;
+    use crate::geometrical_shapes::test_canvas::Canvas;
 
     #[test]
     fn pentagon_draws_without_panic_and_has_edges() {
