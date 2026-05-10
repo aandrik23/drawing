@@ -1,7 +1,10 @@
 //! Geometrical shapes — teammates add modules per `TASKS.md`:
-//! `point_line.rs`, `triangle_rect.rs`, `circle_mod.rs`.
-//!
-//! After implementing, declare modules here and `pub use` the shape types.
+//! `person_1/`, `triangle_rect.rs`, `circle_mod.rs`.
+
+mod person_1;
+
+pub use person_1::{Line, Pentagon, Point};
+pub use person_1::bresenham;
 
 use raster::Color;
 

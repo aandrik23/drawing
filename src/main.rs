@@ -1,11 +1,19 @@
 mod geometrical_shapes;
 
+use geometrical_shapes as gs;
 use geometrical_shapes::Displayable;
 use raster::{Color, Image};
 
 fn main() {
-    let image = Image::blank(1000, 1000);
-    // Wire shape draws here once `Point`, `Line`, `Rectangle`, `Triangle`, `Circle` exist (see `TASKS.md`).
+    let mut image = Image::blank(1000, 1000);
+
+    // Person 1 — line, point, pentagon (see `TASKS.md`). Teammates add rectangle, triangle, circles, cube.
+    gs::Line::random(image.width, image.height).draw(&mut image);
+
+    gs::Point::random(image.width, image.height).draw(&mut image);
+
+    gs::Pentagon::new(&gs::Point::new(200, 200), 120).draw(&mut image);
+
     raster::save(&image, "image.png").unwrap();
 }
 
