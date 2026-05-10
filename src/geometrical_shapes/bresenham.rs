@@ -1,5 +1,5 @@
 use crate::geometrical_shapes::Displayable;
-use crate::raster::Color;
+use raster::Color;
 
 /// Rasterize a segment between two pixels using Bresenham's algorithm.
 /// Safe for degenerate segments (`(x0,y0) == (x1,y1)`): draws a single pixel.
@@ -38,7 +38,7 @@ pub fn bresenham<D: Displayable + ?Sized>(
 mod tests {
     use super::*;
     use crate::geometrical_shapes::test_canvas::Canvas;
-    use crate::raster::Color;
+    use raster::Color;
 
     #[test]
     fn degenerate_segment_draws_single_pixel() {

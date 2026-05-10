@@ -1,5 +1,5 @@
 use rand::Rng;
-use crate::raster::{Color, Image};
+use raster::{Color, Image};
 
 use super::point_line::Point;
 use super::{Displayable, Drawable};
@@ -52,14 +52,32 @@ impl Circle {
     }
 
     pub fn draw_to<D: Displayable + ?Sized>(&self, target: &mut D) {
+        let mut x = self.radius;
+        let mut y = 0;
+        let mut error = 0;
+        let cx = self.center.x;
+        let cy = self.center.y;
         let color = self.color();
-        let radius_squared = self.radius * self.radius;
 
-        for dx in -self.radius..=self.radius {
-            for dy in -self.radius..=self.radius {
-                if dx * dx + dy * dy <= radius_squared {
-                    target.display(self.center.x + dx, self.center.y + dy, color.clone());
-                }
+        while x >= y {
+            target.display(cx + x, cy + y, color.clone());
+            target.display(cx + y, cy + x, color.clone());
+            target.display(cx - y, cy + x, color.clone());
+            target.display(cx - x, cy + y, color.clone());
+            target.display(cx - x, cy - y, color.clone());
+            target.display(cx - y, cy - x, color.clone());
+            target.display(cx + y, cy - x, color.clone());
+            target.display(cx + x, cy - y, color.clone());
+
+            y += 1;
+
+            if error <= 0 {
+                error += 2 * y + 1;
+            }
+
+            if error > 0 {
+                x -= 1;
+                error -= 2 * x + 1;
             }
         }
     }
@@ -229,16 +247,18 @@ mod tests {
     }
 
     #[test]
-    fn filled_circle_draws_center_and_interior_pixels() {
+    fn circle_outline_draws_perimeter_pixels() {
         use crate::geometrical_shapes::test_canvas::Canvas;
 
         let mut canvas = Canvas::new(20, 20);
         let circle = Circle::new(&Point::new(10, 10), 2);
         circle.draw_to(&mut canvas);
 
-        assert!(canvas.pixels.contains(&(10, 10)));
-        assert!(canvas.pixels.contains(&(11, 10)));
-        assert!(canvas.pixels.contains(&(10, 11)));
+        assert!(canvas.pixels.contains(&(12, 10)));
+        assert!(canvas.pixels.contains(&(10, 12)));
+        assert!(canvas.pixels.contains(&(8, 10)));
+        assert!(canvas.pixels.contains(&(10, 8)));
+        assert!(!canvas.pixels.contains(&(10, 10)));
         assert!(canvas.pixels.len() > 8);
     }
 

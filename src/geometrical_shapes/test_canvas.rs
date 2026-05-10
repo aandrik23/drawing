@@ -1,6 +1,6 @@
 //! Test-only [`Displayable`] that records pixels and checks canvas bounds.
 
-use crate::raster::Color;
+use raster::Color;
 
 use crate::geometrical_shapes::Displayable;
 
