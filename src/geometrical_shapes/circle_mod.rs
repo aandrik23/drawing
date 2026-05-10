@@ -1,5 +1,5 @@
 use rand::Rng;
-use raster::{Color, Image};
+use crate::raster::{Color, Image};
 
 use super::point_line::Point;
 use super::{Displayable, Drawable};
@@ -20,58 +20,54 @@ impl Circle {
 
     pub fn random(width: i32, height: i32) -> Self {
         let mut rng = rand::thread_rng();
+        let w = width.max(1);
+        let h = height.max(1);
+        let max_centered_radius = ((w.min(h) - 1) / 2).max(0);
+        let preferred_max_radius = (w.min(h) / 8).max(1);
+        let max_radius = preferred_max_radius.min(max_centered_radius);
 
-        let max_radius = (width.min(height) / 8).max(1);
-        let radius = rng.gen_range(1..=max_radius);
+        let radius = if max_radius == 0 {
+            0
+        } else {
+            rng.gen_range(1..=max_radius)
+        };
 
-        let x = rng.gen_range(radius..width - radius);
-        let y = rng.gen_range(radius..height - radius);
+        let min_x = radius;
+        let max_x = (w - 1 - radius).max(min_x);
+        let min_y = radius;
+        let max_y = (h - 1 - radius).max(min_y);
 
-        Self {
-            center: Point::new(x, y),
-            radius,
-        }
+        let x = rng.gen_range(min_x..=max_x);
+        let y = rng.gen_range(min_y..=max_y);
+
+        Self::new(&Point::new(x, y), radius)
     }
 
+    #[cfg(test)]
     pub fn is_inside_bounds(&self, width: i32, height: i32) -> bool {
         self.center.x - self.radius >= 0
             && self.center.y - self.radius >= 0
             && self.center.x + self.radius < width
             && self.center.y + self.radius < height
     }
+
+    pub fn draw_to<D: Displayable + ?Sized>(&self, target: &mut D) {
+        let color = self.color();
+        let radius_squared = self.radius * self.radius;
+
+        for dx in -self.radius..=self.radius {
+            for dy in -self.radius..=self.radius {
+                if dx * dx + dy * dy <= radius_squared {
+                    target.display(self.center.x + dx, self.center.y + dy, color.clone());
+                }
+            }
+        }
+    }
 }
 
 impl Drawable for Circle {
     fn draw(&self, image: &mut Image) {
-        let mut x = self.radius;
-        let mut y = 0;
-        let mut error = 0;
-
-        while x >= y {
-            let cx = self.center.x;
-            let cy = self.center.y;
-            let color = self.color();
-
-            image.display(cx + x, cy + y, color.clone());
-            image.display(cx + y, cy + x, color.clone());
-            image.display(cx - y, cy + x, color.clone());
-            image.display(cx - x, cy + y, color.clone());
-            image.display(cx - x, cy - y, color.clone());
-            image.display(cx - y, cy - x, color.clone());
-            image.display(cx + y, cy - x, color.clone());
-            image.display(cx + x, cy - y, color.clone());
-
-            y += 1;
-
-            if error <= 0 {
-                error += 2 * y + 1;
-            }
-
-            if error > 0 {
-                x -= 1;
-                error -= 2 * x + 1;
-            }
-        }
+        self.draw_to(image);
     }
 
     fn color(&self) -> Color {
@@ -97,19 +93,32 @@ impl Cube {
 
     pub fn random(width: i32, height: i32) -> Self {
         let mut rng = rand::thread_rng();
+        let w = width.max(1);
+        let h = height.max(1);
+        let preferred_max_size = (w.min(h) / 4).max(1);
+        let mut fitted_max_size = 0;
 
-        let max_size = (width.min(height) / 4).max(30);
-        let size = rng.gen_range(30..=max_size);
+        for candidate in 1..=preferred_max_size {
+            let depth = candidate / 3;
+            if candidate + depth <= w - 1 && candidate <= h - 1 {
+                fitted_max_size = candidate;
+            }
+        }
+
+        let size = if fitted_max_size == 0 {
+            0
+        } else {
+            rng.gen_range(1..=fitted_max_size)
+        };
         let depth = size / 3;
 
-        let x = rng.gen_range(0..width - size - depth);
-        let y = rng.gen_range(depth..height - size);
+        let max_x = (w - 1 - size - depth).max(0);
+        let min_y = depth.min(h - 1);
+        let max_y = (h - 1 - size).max(min_y);
+        let x = rng.gen_range(0..=max_x);
+        let y = rng.gen_range(min_y..=max_y);
 
-        Self {
-            top_left: Point::new(x, y),
-            size,
-            depth,
-        }
+        Self::new(&Point::new(x, y), size)
     }
 
     pub fn vertices(&self) -> [Point; 8] {
@@ -130,6 +139,7 @@ impl Cube {
         ]
     }
 
+    #[cfg(test)]
     pub fn is_inside_bounds(&self, width: i32, height: i32) -> bool {
         self.vertices()
             .iter()
@@ -210,11 +220,48 @@ mod tests {
     }
 
     #[test]
+    fn circle_new_keeps_center_and_radius() {
+        let center = Point::new(12, 34);
+        let circle = Circle::new(&center, 7);
+        assert_eq!(circle.center.x, 12);
+        assert_eq!(circle.center.y, 34);
+        assert_eq!(circle.radius, 7);
+    }
+
+    #[test]
+    fn filled_circle_draws_center_and_interior_pixels() {
+        use crate::geometrical_shapes::test_canvas::Canvas;
+
+        let mut canvas = Canvas::new(20, 20);
+        let circle = Circle::new(&Point::new(10, 10), 2);
+        circle.draw_to(&mut canvas);
+
+        assert!(canvas.pixels.contains(&(10, 10)));
+        assert!(canvas.pixels.contains(&(11, 10)));
+        assert!(canvas.pixels.contains(&(10, 11)));
+        assert!(canvas.pixels.len() > 8);
+    }
+
+    #[test]
+    fn random_circle_is_safe_on_small_canvas() {
+        let circle = Circle::random(1, 1);
+        assert_eq!(circle.center.x, 0);
+        assert_eq!(circle.center.y, 0);
+        assert_eq!(circle.radius, 0);
+    }
+
+    #[test]
     fn random_cubes_stay_inside_large_canvas() {
         for _ in 0..1000 {
             let cube = Cube::random(1000, 1000);
             assert!(cube.is_inside_bounds(1000, 1000));
         }
+    }
+
+    #[test]
+    fn random_cube_is_safe_on_small_canvas() {
+        let cube = Cube::random(1, 1);
+        assert!(cube.is_inside_bounds(1, 1));
     }
 
     #[test]

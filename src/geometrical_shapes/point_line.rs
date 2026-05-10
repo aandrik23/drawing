@@ -1,7 +1,7 @@
 use std::f64::consts::PI;
 
 use rand::Rng;
-use raster::{Color, Image};
+use crate::raster::{Color, Image};
 
 use super::bresenham::bresenham;
 use super::{Displayable, Drawable};

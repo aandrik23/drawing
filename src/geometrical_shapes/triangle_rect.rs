@@ -1,4 +1,4 @@
-use raster::{Color, Image};
+use crate::raster::{Color, Image};
 
 use super::point_line::{Line, Point};
 use super::Drawable;
@@ -28,7 +28,7 @@ impl Drawable for Triangle {
     }
 
     fn color(&self) -> Color {
-        Color::rgb(0, 120, 255)
+        Color::rgb(255, 215, 0)
     }
 }
 

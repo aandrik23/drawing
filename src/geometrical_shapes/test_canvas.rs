@@ -1,6 +1,6 @@
 //! Test-only [`Displayable`] that records pixels and checks canvas bounds.
 
-use raster::Color;
+use crate::raster::Color;
 
 use crate::geometrical_shapes::Displayable;
 
@@ -17,13 +17,6 @@ impl Canvas {
             w,
             h,
         }
-    }
-
-    pub fn sorted_unique(&self) -> Vec<(i32, i32)> {
-        let mut v = self.pixels.clone();
-        v.sort_unstable();
-        v.dedup();
-        v
     }
 }
 
