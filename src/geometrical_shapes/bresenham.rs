@@ -18,7 +18,7 @@ pub fn bresenham<D: Displayable + ?Sized>(
     let mut err = dx + dy;
 
     loop {
-        target.display(x0, y0, color);
+        target.display(x0, y0, color.clone());
         if x0 == x1 && y0 == y1 {
             break;
         }
